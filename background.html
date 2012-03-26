@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+ * Copyright (c) 2010 The Chromium Authors. All rights reserved.  Use of this
+ * source code is governed by a BSD-style license that can be found in the
+ * LICENSE file.
+-->
+<html>
+  <head>
+    <script>
+
+	var bExecutting=true;
+	var ports={};
+
+	//アイコン表示
+	function checkForValidUrl(tabId, changeInfo, tab) {
+	// If the letter 'g' is found in the tab's URL...
+		if (tab.url.indexOf('sengokuixa.jp') > -1) {
+		  // ... show the page action.
+			//chrome.pageAction.show(tabId);
+			setIcon(tabId);
+		}
+	};
+
+	// Listen for any changes to the URL of any tab.
+	chrome.tabs.onUpdated.addListener(checkForValidUrl);
+
+	//コンテンツスクリプトからのイベントリスナ
+	chrome.extension.onRequest.addListener(
+	  function(request, sender, sendResponse) {
+	    console.log(sender.tab ?
+	                "from a content script:" + sender.tab.url :
+	                "from the extension");
+	    if (request.greeting == "hello"){
+			if(bExecutting){
+			 	var src = "alarm.mp3";
+				var audio = new Audio( src );
+				audio.play();
+			}
+			sendResponse({farewell: "goodbye"});
+		} else {
+	      sendResponse({}); // snub them.
+		}
+	  }
+	);
+
+    //URL右に表示されるアイコンをクリックしたら
+    chrome.pageAction.onClicked.addListener(function(tab) {
+		bExecutting = !bExecutting;
+        setIcon(tab.id);
+    });
+
+	//URL右に表示されるアイコンの変更
+	function setIcon(tid) {
+
+	    var icon_path;
+	    var title;
+	    //console.log("tid:"+tid+"icon_path: "+icon_path+", title:"+title);
+
+		if(bExecutting){
+			icon_path = "icon-19.png";
+			title ="on";
+		}else{
+			icon_path = "icon-19_d.png";
+			title ="off";
+		}
+	    chrome.pageAction.show(tid);
+	    chrome.pageAction.setIcon({"tabId": tid, "path":icon_path});
+	    chrome.pageAction.setTitle({"tabId": tid, "title": title});             
+
+	}
+    </script>
+  </head>
+</html>

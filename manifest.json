@@ -1,0 +1,24 @@
+{
+  "name": "ixa tekishu alert",
+  "version": "0.3",
+  "description": "戦国ixa 敵襲が来たら音が鳴るツール",
+  "background_page": "background.html",
+  "page_action" :
+  {
+    "default_icon" : "icon-19.png",
+    "default_title" : "戦国ixa 敵襲が来たら音が鳴るツール"
+  },
+  "permissions" : [
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*.sengokuixa.jp/*"],
+      "js": ["jquery-1.6.3.min.js", "myscript.js"]
+    }
+  ],
+  "icons" : {
+    "48" : "icon-48.png",
+    "128" : "icon-128.png"
+  }
+}
